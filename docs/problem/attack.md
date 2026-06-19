@@ -8,7 +8,7 @@ Agentjacking is an attack class that hijacks AI coding agents into executing att
 
 1. **Discovery** — Attacker locates the target's Sentry DSN via client-side JS, GitHub, or Censys search. No breach required.
 2. **Injection** — Attacker POSTs a crafted event to Sentry's public ingest endpoint using only the DSN. No authentication required.
-3. **Obfuscation** — The payload embeds markdown-formatted instructions that are structurally identical to Sentry's own system templates.
+3. **Obfuscation** — The payload embeds markdown-formatted instructions designed to appear as legitimate error context — indistinguishable to the agent from real error data.
 4. **Execution trigger** — Developer asks their AI coding agent to "fix the Sentry errors." Agent reads injected events via MCP.
 5. **Exploitation** — Agent cannot distinguish injected instructions from legitimate data. Executes attacker-controlled npm package with developer's full credentials.
 6. **Exfiltration** — Package probes and exfiltrates environment variables, AWS keys, GitHub tokens, git credentials.
