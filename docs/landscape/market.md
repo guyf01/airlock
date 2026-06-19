@@ -1,70 +1,54 @@
 # Market Landscape: Existing Solutions
 
-## The Critical Architectural Distinction
+## Where Solutions Intercept
 
-Solutions fall into two categories based on where they intercept:
+Solutions fall into two categories based on where they sit in the agent's execution flow:
 
-- **MCP tool response layer** — intercepts content before it enters the agent's context window. This is the correct layer.
-- **LLM API boundary** — intercepts prompts and completions after tool content has already entered context. Too late.
+- **MCP tool response layer** — intercepts content before it enters the agent's context window
+- **LLM API boundary** — intercepts prompts and completions after tool content has already entered context
+- **Post-execution** — monitors or audits after the agent has acted
 
 ---
 
-## Solutions at the Correct Layer (MCP Tool Response)
+## MCP Tool Response Layer
 
 ### Bifrost (getmaxim.ai)
-- Open-source, Go-based MCP gateway
-- Sits between agent and MCP servers
-- Dual-stage guardrails: fires at both ingress and egress
-- Blocks known injection patterns (hardcoded strings, hidden Unicode, "ignore previous instructions")
-- Supports MCP tool allowlists per virtual key
-- **Gap:** Pattern matching only. Does not semantically classify which tool endpoints return user-controlled content vs operator-controlled content. A novel payload that doesn't match known patterns passes through undetected.
+Open-source, Go-based MCP gateway. Sits between the agent and MCP servers. Fires guardrails at both ingress and egress. Blocks known injection patterns (hardcoded strings, hidden Unicode, imperative phrases like "ignore previous instructions"). Supports MCP tool allowlists per virtual key.
 
 ### lasso-security/mcp-gateway (GitHub)
-- Plugin-based proxy wrapping other MCP servers
-- Sanitises requests and responses, masks sensitive tokens
-- Lighter than Bifrost
-- **Gap:** Same as Bifrost — no semantic trust classification.
+Plugin-based proxy wrapping other MCP servers. Sanitises requests and responses, masks sensitive tokens. Lighter feature set than Bifrost.
 
 ### revsmoke/promptrejectormcp (GitHub)
-- MCP server that classifies tool output for injection patterns
-- Detects imperative language, "ignore previous", hidden Unicode
-- **Fundamental flaw:** Agent-side — the agent must be configured to call it. A hijacked agent will not call its own security check.
+An MCP server the agent calls to classify tool output for injection patterns. Detects imperative language, "ignore previous", hidden Unicode. Notable limitation: the agent must be configured to call it — it is agent-side, not proxy-side.
 
 ---
 
-## Solutions at the Wrong Layer (LLM API Boundary)
+## LLM API Boundary
 
 ### Portkey, LiteLLM, Helicone
-- Intercept at the LLM API level (prompts and completions)
-- MCP tool content has already entered the context by the time they see it
-- Useful for observability and rate limiting, not for preventing MCP injection
+Intercept at the LLM API level — prompts sent to the model and completions returned. Tool response content has already entered the context by the time they see it. Primarily useful for observability, rate limiting, and cost management.
+
+---
+
+## Post-Execution Monitoring
 
 ### Straiker Defend AI
-- Runtime monitoring with semantic detection
-- Post-execution anomaly detection
-- Catches data exfiltration after the fact
-- Does not prevent agent from being instructed by injected content
+Runtime monitoring with semantic detection. Detects data exfiltration attempts (PII, secrets, source code) after actions occur. Does not intercept at the tool response layer.
 
 ### Obsidian Security, Oktsec
-- Governance and access control focused
-- Post-execution monitoring
-- Enterprise SaaS, not developer tooling
+Governance and access control monitoring across enterprise SaaS agents. Post-execution audit focus. Not targeted at developer tooling or MCP-specific injection.
 
 ---
 
 ## Research (Not Deployed)
 
 ### NeuroTaint (arXiv 2026)
-- First taint tracking framework for LLM agents
-- Tracks semantic propagation of untrusted data through reasoning chains
-- **Not real-time:** works offline on execution traces after the fact
-- Not open-sourced or deployed anywhere
+Semantic taint tracking framework for LLM agents. Tracks how untrusted data propagates through an agent's reasoning chain to its actions. Works offline on execution traces — not real-time. Not open-sourced or deployed.
 
 ---
 
-## The Gap Nobody Has Filled
+## The Gap
 
-No production system:
-1. Classifies MCP tool responses by data provenance (operator-controlled vs user/externally-submitted) at the endpoint level
-2. Communicates that classification to agents in a structured, protocol-level way
-3. Does this in real-time, before content enters the agent's context window
+All production solutions share the same underlying limitation: none classify MCP tool responses by data provenance — distinguishing operator-controlled content from user-submitted or externally-sourced content — at the endpoint level, in real-time, before that content enters the agent's context window.
+
+Pattern matching (Bifrost, lasso) catches known payloads but not novel ones. Post-execution monitoring (Straiker, Obsidian) detects consequences but does not prevent them. Agent-side classifiers (revsmoke) depend on the compromised party to run its own security check.
