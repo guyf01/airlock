@@ -17,7 +17,7 @@ Some sources accept public writes by design — that is their purpose. You canno
 Prompt-only defences are insufficient by design. Natural language instructions ("ignore untrusted data") operate in the same medium as the attack — they are tokens in the context window, just like the injected content. A sufficiently crafted payload can contradict, dilute, or override the instruction. The model has no enforcement mechanism below the token level; it has only its training and the instructions it was given, both of which can be manipulated through the same channel being attacked.
 
 **The agent harness (Claude Code, Cursor, Codex)**
-The harness sits at the execution layer, below the model, and is architecturally the correct place to enforce trust policies — it decides which tool calls actually execute. However no harness currently does this. Each vendor would need to build it independently, and no standard exists that defines what trust levels mean or how they should be communicated. Without a shared standard, no vendor has a surface to enforce against.
+The harness orchestrates the model — it calls the model, receives tool-call requests in return, and decides whether to execute them. This makes it the last checkpoint before any action reaches the real world, and architecturally the correct place to enforce trust policies. However no harness currently enforces trust policies based on tool response provenance. Each vendor would need to build it independently, and no standard exists within MCP that defines what trust levels mean or how they should be communicated at the tool response level. Without that, no vendor has a shared surface to enforce against.
 
 **MCP protocol**
 MCP carries no trust or provenance metadata for tool responses. There is no field in any MCP response that indicates whether the content is operator-controlled or user/externally-submitted. The 2026 MCP spec added distributed tracing and auth hardening but explicitly did not address tool response provenance. The harness therefore has no structured signal to enforce policy on, even if it wanted to.
@@ -37,4 +37,4 @@ None of these parties have moved because none of the others have moved first. Th
 
 SQL injection persisted not because nobody understood parameterised queries, but because the structural separation of data from instructions had to become a default — enforced by frameworks, ORMs, and tooling — before it actually protected anyone. Understanding the fix and having the ecosystem enforce the fix are two different things.
 
-The same gap exists here. The correct fix is understood. The enforcement infrastructure does not exist yet.
+The same gap exists here, with one important difference: parameterised queries required change at one layer. This problem requires coordinated change across the MCP spec, MCP server authors, and agent harnesses simultaneously — a harder coordination problem.
