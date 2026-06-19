@@ -65,6 +65,15 @@ filesystem:
 
 Unknown servers and endpoints default to `untrusted-external`.
 
+### Registry Governance
+
+Community contributions follow these rules:
+
+- **Evidence required** — every classification must link to server documentation or source code demonstrating the data origin (e.g. "this endpoint returns user-submitted payloads, see: [link]")
+- **Asymmetric burden** — downgrading from `untrusted-external` to `trusted` or `context-dependent` requires stronger justification than upgrading in the other direction
+- **Stale entries** — when a server changes its API, entries can be flagged via issues; until resolved they remain at their last classification
+- **Fails safe** — a missing, stale, or disputed entry defaults to `untrusted-external`, so gaps in the registry err toward protection not exposure
+
 ## How Agents Know to Respect Trust Markers
 
 The proxy exposes a MCP prompt resource. Agents that support MCP prompts (Claude Code does) include this in their system context at session start — before any tool calls happen, so the instruction is established before any potentially injected content. Being present at the start of the session gives it the strongest possible position in the context — but it is not cryptographic enforcement.
