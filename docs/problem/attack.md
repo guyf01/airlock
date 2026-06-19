@@ -4,37 +4,35 @@
 
 Agentjacking is an attack class that hijacks AI coding agents into executing attacker-controlled code by injecting malicious instructions into external data sources the agent reads. MCP is the most common delivery mechanism, as it is the primary way coding agents connect to external tools.
 
-## The Attack Chain
+## The General Attack Pattern
 
-1. **Discovery** — Attacker locates the target's Sentry DSN via client-side JS, GitHub, or Censys search. No breach required.
-2. **Injection** — Attacker POSTs a crafted event to Sentry's public ingest endpoint using only the DSN. No authentication required.
-3. **Obfuscation** — The payload embeds markdown-formatted instructions designed to appear as legitimate error context — indistinguishable to the agent from real error data.
-4. **Execution trigger** — Developer asks their AI coding agent to "fix the Sentry errors." Agent reads injected events via MCP.
-5. **Exploitation** — The agent reads the injected event and, despite knowing it came from a tool response, has no enforcement mechanism preventing it from acting on instructions embedded within it. Executes attacker-controlled npm package with developer's full credentials.
-6. **Exfiltration** — Package probes and exfiltrates environment variables, AWS keys, GitHub tokens, git credentials.
+1. **Identify an injection point** — Find an external data source the target's agent reads via MCP that accepts writes from untrusted parties (publicly writable APIs, issue trackers, error monitoring, log aggregators).
+2. **Inject a payload** — Write crafted content to that source, designed to appear as legitimate data while embedding instructions directed at the agent.
+3. **Wait for the trigger** — The developer asks their agent to perform a routine task that causes it to read from the compromised source.
+4. **Exploitation** — The agent reads the injected content and, despite knowing it came from a tool response, has no enforcement mechanism preventing it from acting on instructions embedded within it.
+5. **Impact** — The agent executes attacker-controlled code with the developer's full environment access, potentially exfiltrating credentials, secrets, and source code.
 
-## Why Sentry Specifically
+## Why This Attack Class Is Effective
 
-- DSNs are **public by design** — embedded in client-side JS, that is the intended behaviour
-- Writing to a DSN requires **zero authentication**
-- Developers **naturally ask agents** to fix errors — the injection arrives through a trusted, routine workflow
-- Sentry itself declared the issue "technically not defensible" at their layer
+- The agent's tool responses come from sources developers consider part of their trusted workflow
+- The attack requires no breach of the developer's systems — only write access to a source the agent reads
+- Traditional security controls (WAF, EDR, IAM, firewalls) see only authorised actions taken by a legitimate tool; they cannot detect that those actions originated from injected instructions
+- The attack succeeds through normal operation, not exploitation of a software bug
 
-## Why It Generalises Beyond Sentry
+## Delivery Mechanisms
 
-The Sentry DSN is the lowest-friction delivery mechanism, but the attack class applies to any MCP tool that returns user-controlled or externally-sourced content:
+Any MCP tool that returns content from a source accepting untrusted writes is a potential vector:
 
+- Error monitoring platforms (publicly writable via design)
 - GitHub issues, PR descriptions, commit messages
 - Linear / Jira tickets
-- Slack messages
+- Slack messages in monitored channels
 - Log files with user-controlled entries
 - Database records containing user input
 - Any web page the agent browses
 
-The attack pattern is always: **external data source → MCP tool call → agent reads response → agent cannot distinguish data from instructions → agent executes attacker intent.**
+The lowest-friction vectors are those where writing is unauthenticated or trivially authenticated by design.
 
-## Known Statistics
+## Known Real-World Disclosures
 
-- **85%** exploitation success rate across Claude Code, Cursor, and Codex in controlled testing
-- **2,388** organisations with publicly exposed Sentry DSNs identified at time of disclosure — the prerequisite for the attack, not the attack itself. The actual vulnerable population is the subset of these that use AI coding agents with Sentry MCP configured.
-- Exploitation succeeds even when agents are explicitly instructed via system prompt to ignore untrusted data
+See `docs/disclosures/` for documented instances of this attack class demonstrated against specific platforms.
