@@ -40,24 +40,27 @@ The SDK path is more accurate — server authors know their own data provenance 
 Community-maintained file (JSON/YAML) bundled with the proxy. Classifies MCP server endpoints by trust level.
 
 Trust levels:
-- `trusted` — operator-controlled data (filesystem reads, project config)
-- `untrusted-external` — user-submitted or externally-sourced data (Sentry events, GitHub issues, Linear tickets)
+- `trusted` — operator-initiated data whose origin is controlled by the developer
+- `untrusted-external` — user-submitted or externally-sourced data
+- `context-dependent` — data whose provenance depends on what was written to it, not just the server
+
+Server-level classification is a coarse approximation. A single endpoint can return content of mixed provenance — a `read_file` call may return a file committed by the operator or a file pulled from a third-party package. The registry captures the dominant case; the SDK path (Component 2) is how individual servers express finer-grained provenance.
 
 Example:
 ```yaml
 sentry:
-  get_issue_events: untrusted-external
-  get_project_stats: trusted
-  get_dsn: trusted
+  get_issue_events: untrusted-external  # user-submitted error payloads
+  get_project_stats: trusted            # sentry's own metrics
+  get_dsn: trusted                      # operator config
 
 github:
-  get_issue: untrusted-external
-  get_file_contents: trusted
+  get_issue: untrusted-external         # anyone can open issues
+  get_file_contents: context-dependent  # repo files may include third-party content
   list_pull_requests: untrusted-external
 
 filesystem:
-  read_file: trusted
-  write_file: trusted
+  read_file: context-dependent  # files may contain third-party or user-controlled content
+  write_file: trusted           # writing is operator-initiated
 ```
 
 Unknown servers and endpoints default to `untrusted-external`.
