@@ -10,7 +10,7 @@
 
 **What it actually does:** Spotlighting marks content as coming from an external source — this is itself a trust classification. What it does not do is carry fine-grained provenance: which server, which endpoint, which specific data items within a response. It treats all external content as a single category.
 
-**Current limitation:** Applied at prompt construction time for untrusted text in the input. Not designed for MCP tool responses specifically. Does not classify *which* data is untrusted — only marks that it came from an external source.
+**Current limitation:** Applied at prompt construction time for untrusted text in the input. Not designed for MCP tool responses specifically.
 
 **Relevance:** Demonstrates that structural marking of untrusted content is more effective than natural language instruction alone. The core technique is potentially applicable to MCP tool responses.
 
