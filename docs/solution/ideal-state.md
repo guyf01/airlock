@@ -8,10 +8,11 @@ An agentic system where an agent can freely observe any data from any source, bu
 
 The correct framing is taint tracking: an action should be gated if it was causally downstream of untrusted content.
 
-This defines two distinct zones:
+This defines three distinct zones:
 
-- **Observation** — reading, summarising, analysing content from any source, regardless of trust level. This should be completely unrestricted. Agents need to read untrusted data to do their job.
-- **Action** — executing code, installing packages, writing files, pushing to remotes, accessing credentials. This is what requires a gate when the triggering instruction originated from untrusted content.
+- **Passive observation** — reading and analysing content within the current context, regardless of trust level. Unrestricted. Agents need to read untrusted data to do their job.
+- **Active propagation** — summarising into output, passing content forward to other tools or turns. Should preserve trust attribution so downstream consumers know the content originated from an untrusted source. Summarisation is not neutral: an agent that summarises a prompt-injected event may carry the injected instruction forward into the next context window.
+- **Action** — executing code, installing packages, writing files, pushing to remotes, accessing credentials. Requires a gate when the triggering instruction originated from untrusted content.
 
 ## What "Fully Solved" Looks Like
 
