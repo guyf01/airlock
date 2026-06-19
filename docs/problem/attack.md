@@ -10,7 +10,7 @@ Agentjacking is an attack class that hijacks AI coding agents into executing att
 2. **Injection** — Attacker POSTs a crafted event to Sentry's public ingest endpoint using only the DSN. No authentication required.
 3. **Obfuscation** — The payload embeds markdown-formatted instructions designed to appear as legitimate error context — indistinguishable to the agent from real error data.
 4. **Execution trigger** — Developer asks their AI coding agent to "fix the Sentry errors." Agent reads injected events via MCP.
-5. **Exploitation** — Agent cannot distinguish injected instructions from legitimate data. Executes attacker-controlled npm package with developer's full credentials.
+5. **Exploitation** — The agent reads the injected event and, despite knowing it came from a tool response, has no enforcement mechanism preventing it from acting on instructions embedded within it. Executes attacker-controlled npm package with developer's full credentials.
 6. **Exfiltration** — Package probes and exfiltrates environment variables, AWS keys, GitHub tokens, git credentials.
 
 ## Why Sentry Specifically
@@ -36,5 +36,5 @@ The attack pattern is always: **external data source → MCP tool call → agent
 ## Known Statistics
 
 - **85%** exploitation success rate across Claude Code, Cursor, and Codex in controlled testing
-- **2,388** organisations with exploitable Sentry DSNs identified at time of disclosure
+- **2,388** organisations with publicly exposed Sentry DSNs identified at time of disclosure — the prerequisite for the attack, not the attack itself. The actual vulnerable population is the subset of these that use AI coding agents with Sentry MCP configured.
 - Exploitation succeeds even when agents are explicitly instructed via system prompt to ignore untrusted data
