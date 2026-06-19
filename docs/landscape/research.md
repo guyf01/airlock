@@ -2,7 +2,7 @@
 
 ## Microsoft Spotlighting
 
-**Paper:** "Defending Against Indirect Prompt Injection Attacks with Spotlighting"
+**Paper:** "Defending Against Indirect Prompt Injection Attacks with Spotlighting" — https://arxiv.org/abs/2403.14720
 
 **Technique:** Structurally marks untrusted data in prompts using delimiters, encoding (e.g. base64), or special tokens so the model can distinguish data from instructions at a structural level — not just from natural language instruction.
 
@@ -28,7 +28,7 @@
 
 ## NeuroTaint (arXiv 2026)
 
-**Paper:** "Ghost in the Agent: Redefining Information Flow Tracking for LLM Agents"
+**Paper:** "Ghost in the Agent: Redefining Information Flow Tracking for LLM Agents" — https://arxiv.org/abs/2604.23374
 
 **Technique:** Semantic taint tracking — follows untrusted data as it propagates through an agent's reasoning chain to its actions.
 
