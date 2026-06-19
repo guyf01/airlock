@@ -6,11 +6,13 @@
 
 **Technique:** Structurally marks untrusted data in prompts using delimiters, encoding (e.g. base64), or special tokens so the model can distinguish data from instructions at a structural level — not just from natural language instruction.
 
-**Result:** Reduces indirect prompt injection success rate from **>50% to <2%**.
+**Result:** Significantly reduces indirect prompt injection success rates compared to unprotected baselines, per the paper's reported figures.
 
-**Current limitation:** Applied at prompt construction time for untrusted text in the input. Not applied to MCP tool responses. Does not classify *which* data is untrusted — only marks that it came from an external source.
+**What it actually does:** Spotlighting marks content as coming from an external source — this is itself a trust classification. What it does not do is carry fine-grained provenance: which server, which endpoint, which specific data items within a response. It treats all external content as a single category.
 
-**Relevance:** Demonstrates that structural marking of untrusted content is highly effective. The technique is directly applicable to MCP tool responses if applied at the proxy layer.
+**Current limitation:** Applied at prompt construction time for untrusted text in the input. Not designed for MCP tool responses specifically. Does not classify *which* data is untrusted — only marks that it came from an external source.
+
+**Relevance:** Demonstrates that structural marking of untrusted content is more effective than natural language instruction alone. The core technique is potentially applicable to MCP tool responses.
 
 ---
 
@@ -20,7 +22,7 @@
 
 **Approach:** Instruction hierarchy (system prompt > user turn > tool output). Model is trained to follow higher-priority instructions over lower-priority ones.
 
-**Limitation:** Still a model-level defence — does not classify data provenance within tool responses. Injection success can still occur with sufficiently crafted payloads.
+**Limitation:** Model-level defense — does not classify data provenance within tool responses. Does not prevent injection from succeeding against a sufficiently crafted payload targeting the model's instruction-following behavior.
 
 ---
 
@@ -32,10 +34,4 @@
 
 **Limitation:** Offline analysis of execution traces. Not real-time. Not deployed or open-sourced.
 
-**Relevance:** Confirms that taint tracking is the correct CS framing for this problem. The unsolved version of this in real-time is the gap we are building toward.
-
----
-
-## Key Empirical Finding
-
-System prompt instructions alone do not prevent exploitation. The 85% exploitation rate across Claude Code, Cursor, and Codex was measured in controlled testing where agents were explicitly instructed to ignore untrusted data. Natural language instruction is insufficient — structural separation is required (Spotlighting finding).
+**Relevance:** Proposes taint tracking as a framing for this problem class. The real-time equivalent of what NeuroTaint does offline is the unsolved version of the enforcement problem.
