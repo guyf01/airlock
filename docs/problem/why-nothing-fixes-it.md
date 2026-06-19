@@ -11,12 +11,10 @@ What is missing is any runtime mechanism that *acts on* that provenance. The mod
 ## Why No Current Layer Addresses This
 
 **Data source (Sentry, GitHub, etc.)**
-Some sources accept public writes by design — that is their purpose. You cannot make the data source responsible for how agents trust its output. Sentry's own position ("technically not defensible at our layer") is correct.
+Some sources accept public writes by design — that is their purpose. You cannot make the data source responsible for how agents trust its output. A platform that accepts public writes cannot be expected to prevent those writes from being read by an AI agent that has been configured to trust it.
 
 **The LLM model itself**
-Prompt-only defences have failed empirically. An 85% exploitation rate was observed across Claude Code, Cursor, and Codex even when agents were explicitly instructed via system prompt to ignore untrusted data. ([Source: Tenet Security agentjacking disclosure](https://tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/))
-
-The model can see that a Sentry event came from a tool call — but it has no enforced policy that prevents it from acting on instructions embedded within that event. Natural language instruction is not enforcement.
+Prompt-only defences are insufficient by design. Natural language instructions ("ignore untrusted data") operate in the same medium as the attack — they are tokens in the context window, just like the injected content. A sufficiently crafted payload can contradict, dilute, or override the instruction. The model has no enforcement mechanism below the token level; it has only its training and the instructions it was given, both of which can be manipulated through the same channel being attacked.
 
 **The agent harness (Claude Code, Cursor, Codex)**
 The harness sits at the execution layer, below the model, and is architecturally the correct place to enforce trust policies — it decides which tool calls actually execute. However no harness currently does this. Each vendor would need to build it independently, and no standard exists that defines what trust levels mean or how they should be communicated. Without a shared standard, no vendor has a surface to enforce against.
