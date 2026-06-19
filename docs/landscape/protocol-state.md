@@ -29,15 +29,9 @@ It delegates security enforcement to implementors via SHOULD-level guidelines, w
 
 ## Anthropic's Trust Hierarchy
 
-Anthropic's documentation describes trust levels for Claude at the message level:
+Anthropic's documentation describes an implicit trust hierarchy across Claude's context. Operator instructions (system prompt) carry the highest trust, user messages carry medium trust, and tool results — including MCP responses — are treated with the most skepticism as potentially untrusted external data. This hierarchy is described across Anthropic's agentic security guidance but is not formally specified in a single canonical document.
 
-| Level | Source | Trust |
-|---|---|---|
-| Operator | System prompt | Highest |
-| User | Human turn | Medium |
-| Tool results | MCP responses | Lower |
-
-This hierarchy stops at the message boundary. It does not extend into the content of tool responses. All content within a tool response is treated equally by the protocol, regardless of whether it came from the operator's own system or an externally-submitted payload.
+Critically, this hierarchy stops at the message boundary. It does not extend into the content of tool responses. All content within a tool response is treated equally by the protocol, regardless of whether it came from the operator's own system or an externally-submitted payload.
 
 ## Relevant IETF Drafts (Proposed, Not Deployed)
 
