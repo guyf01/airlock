@@ -6,7 +6,7 @@ An agentic system where an agent can freely observe any data from any source, bu
 
 ## The Enforcement Boundary
 
-The correct framing is taint tracking: an action should be gated if it was causally downstream of untrusted content.
+Taint tracking names what we are trying to approximate: an action should be gated if it was causally downstream of untrusted content. The ideal system would track that causal ancestry precisely. The practical constraint is that the causal chain passes through the model's implicit reasoning — there is no explicit data flow graph to instrument. What we can do is structurally mark untrusted content at ingress and enforce policy at the action layer — an approximation of taint tracking, not a full implementation of it.
 
 This defines three distinct zones:
 
@@ -31,8 +31,8 @@ In the ideal state, when an agent is about to take an action triggered by untrus
 
 The user then has what they need to make an informed decision. The confirmation is only meaningful if the user understands why they are being asked and what the provenance of the instruction is.
 
-## Why the Causal Chain Is Hard to Track
+## Why Full Taint Tracking Is Not Yet Possible
 
 The causal connection between "read a Sentry event" and "run npm install" passes through the model's implicit reasoning. There is no explicit data flow graph. Unlike traditional taint tracking in compiled code, there is no AST or IR to instrument. The model synthesises a response from everything in its context window simultaneously — attributing a specific action to a specific input is probabilistic, not deterministic.
 
-A fully correct solution would need to resolve this. Partial solutions that approximate it are still valuable.
+The structural marking approach (marking untrusted content at ingress, enforcing at the action layer) is an approximation: it catches the case where injected instructions directly trigger an action, but cannot trace more subtle causal paths where untrusted content influences reasoning across multiple turns. Closing that gap fully requires either interpretability advances that can trace causal influence inside model weights, or architectural changes that keep untrusted data in a structurally isolated channel the model cannot act on directly.
