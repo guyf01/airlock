@@ -52,19 +52,20 @@ search("get error events")
 
 ### Interception Point 2: execute()
 
-The proxy does not need isolate instrumentation to classify `execute()` output. It already has the trust state from the preceding `search()` call.
-
-The proxy tracks which functions were returned in `search()` results and their trust levels. When `execute()` returns, it applies the most conservative trust level from the functions the model had available — without parsing the generated code or requiring server-side instrumentation.
+The proxy intercepts the `execute(code)` call before it reaches the server — the model's generated JavaScript is in the request body. The proxy statically analyses the code to extract which function names are called, looks those up in the trust data from `search()`, and applies the most conservative trust level among the functions actually used.
 
 ```
 search() → proxy records: {getErrorEvents: untrusted-external, getDSN: trusted}
-execute(generated code)
-→ proxy derives: most conservative trust = untrusted-external
+execute("const result = getErrorEvents({limit: 10}); return result;")
+→ proxy parses code: identifies getErrorEvents
+→ looks up: getErrorEvents = untrusted-external
 → applies Spotlighting markers to execute() output
 → model receives trust-annotated output
 ```
 
-This works entirely at the proxy layer. The server does not need to instrument its isolate or track internal calls.
+This identifies what the model actually called, not what was available. It requires no server-side instrumentation.
+
+**Limitation:** Dynamic dispatch breaks static analysis. Code like `obj[methodName]()` where `methodName` is a variable cannot be resolved without running the code. A sophisticated attacker could craft an injection that causes the model to generate dynamic dispatch rather than literal function calls. This does not create a bypass — unresolvable calls fall back to `untrusted-external`, so the safe outcome is preserved. The cost is false positives on legitimate code that happens to use dynamic dispatch, not missed detections. In practice, model-generated code almost always uses literal function calls, so this case is rare.
 
 ---
 
@@ -88,8 +89,8 @@ Same governance model, same asymmetric burden, same conservative default for unk
 
 | Server support | search() enrichment | execute() trust derivation |
 |---|---|---|
-| SDK adopted | Server enriches natively | Proxy derives from search state (or server can annotate directly) |
-| No SDK, registry coverage | Proxy enriches from registry | Proxy derives from search state — most conservative function trust wins |
+| SDK adopted | Server enriches natively | Proxy parses execute() code, looks up called functions in search data (or server annotates directly) |
+| No SDK, registry coverage | Proxy enriches from registry | Proxy parses execute() code, looks up called functions in registry data |
 | No SDK, no registry | No per-function trust data | Proxy defaults all execute() output to untrusted-external |
 
 ---
