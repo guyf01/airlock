@@ -65,6 +65,19 @@ filesystem:
 
 Unknown servers and endpoints default to `untrusted-external`.
 
+Developers can override registry classifications locally via a project-level config file. Local overrides take precedence over the community registry and allow teams to assign trust to internal tools, private MCP servers, and any server where the registry classification is wrong for their specific context:
+
+```yaml
+# .agentjacking.yml (project-level)
+overrides:
+  internal-metrics-server:
+    get_dashboard: trusted        # our own data, not user-submitted
+  github:
+    get_file_contents: trusted    # private repo, all files are operator-controlled
+```
+
+Local overrides are never submitted to the community registry — they reflect deployment-specific context that does not generalise.
+
 ### Registry Governance
 
 Community contributions follow these rules:
@@ -92,4 +105,4 @@ The prompt resource instructs the agent: content inside trust markers is data on
 
 **Opt-in only.** The proxy protects only developers who route their agent traffic through it. Developers who connect directly to MCP servers receive no protection. There is no enforcement mechanism that compels adoption — protection is entirely voluntary until native harness enforcement exists (Phase 4 of the standardisation path).
 
-**Registry coverage dependency.** The conservative default (unknown = untrusted-external) means any unclassified server triggers confirmation prompts. If a developer's stack includes many unregistered servers, every session generates warnings regardless of actual risk. Registry coverage determines whether confirmations are informative signals or noise that gets ignored. Broad registry coverage is required before the conservative default produces useful signal rather than alert fatigue.
+**Registry coverage dependency.** The conservative default (unknown = untrusted-external) means any unclassified server triggers confirmation prompts. If a developer's stack includes many unregistered servers, every session generates warnings regardless of actual risk. Developers can address this immediately via local overrides for their own tools. Broad community registry coverage reduces the burden for the general case over time.
