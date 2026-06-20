@@ -18,6 +18,8 @@
 
 ## Google DeepMind: Defending Gemini Against Indirect Prompt Injections
 
+**Paper:** "Lessons from Defending Gemini Against Indirect Prompt Injections" — https://arxiv.org/abs/2505.14534
+
 **Finding:** Adversarial training improves robustness against prompt injection.
 
 **Approach:** Instruction hierarchy (system prompt > user turn > tool output). Model is trained to follow higher-priority instructions over lower-priority ones.
