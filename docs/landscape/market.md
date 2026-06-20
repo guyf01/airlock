@@ -19,7 +19,7 @@ Open-source, Go-based MCP gateway. Sits between the agent and MCP servers. Fires
 Plugin-based proxy wrapping other MCP servers. Sanitises requests and responses, masks sensitive tokens. Lighter feature set than Bifrost.
 
 ### revsmoke/promptrejectormcp (GitHub)
-An MCP server the agent calls to classify tool output for injection patterns. Detects imperative language, "ignore previous", hidden Unicode. Notable limitation: the agent must be configured to call it — it is agent-side, not proxy-side.
+An MCP server the agent calls to classify tool output for injection patterns. Detects imperative language, "ignore previous", hidden Unicode. Fatal design flaw: the agent must be configured to call it — a compromised agent will not call its own injection checker. This design cannot defend against the attack class it targets.
 
 ---
 
@@ -35,8 +35,11 @@ Intercept at the LLM API level — prompts sent to the model and completions ret
 ### Straiker Defend AI
 Runtime monitoring with semantic detection. Detects data exfiltration attempts (PII, secrets, source code) after actions occur. Does not intercept at the tool response layer.
 
-### Obsidian Security, Oktsec
+### Obsidian Security
 Governance and access control monitoring across enterprise SaaS agents. Post-execution audit focus. Not targeted at developer tooling or MCP-specific injection.
+
+### Oktsec (oktsec.com)
+Open-source AI agent runtime security. Captures tool calls, bash commands, API calls, and MCP tool executions. 268 detection rules across categories including prompt injection, data exfiltration, and credential leaks. Post-execution detection — monitors what happened, does not intercept tool responses before they enter context.
 
 ---
 

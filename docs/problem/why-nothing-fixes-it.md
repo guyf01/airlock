@@ -22,7 +22,7 @@ Prompt-only defences are insufficient by design. Natural language instructions (
 The harness orchestrates the model — it calls the model, receives tool-call requests in return, and decides whether to execute them. This makes it the last checkpoint before any action reaches the real world, and architecturally the correct place to enforce trust policies. However no harness currently enforces trust policies based on tool response provenance. Each vendor would need to build it independently, and no standard exists within MCP that defines what trust levels mean or how they should be communicated at the tool response level. Without that, no vendor has a shared surface to enforce against.
 
 **MCP protocol**
-MCP carries no trust or provenance metadata for tool responses. There is no field in any MCP response that indicates whether the content is operator-controlled or user/externally-submitted. The 2026 MCP spec added distributed tracing and auth hardening but explicitly did not address tool response provenance. The harness therefore has no structured signal to enforce policy on, even if it wanted to.
+MCP carries no trust or provenance metadata for tool responses. There is no field in any MCP response that indicates whether the content is operator-controlled or user/externally-submitted. The 2026 MCP spec added distributed tracing and auth hardening but did not introduce tool response provenance metadata. The harness therefore has no structured signal to enforce policy on, even if it wanted to.
 
 ## Why a Fix Requires Coordinated Change
 
