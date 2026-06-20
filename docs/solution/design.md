@@ -87,3 +87,9 @@ The prompt resource instructs the agent: content inside trust markers is data on
 - No blocklist of dangerous commands to maintain
 - No per-call trust configuration required from developers
 - Conservative default (unknown = untrusted) means new tools are safe by default
+
+## Limitations
+
+**Opt-in only.** The proxy protects only developers who route their agent traffic through it. Developers who connect directly to MCP servers receive no protection. There is no enforcement mechanism that compels adoption — protection is entirely voluntary until native harness enforcement exists (Phase 4 of the standardisation path).
+
+**Registry coverage dependency.** The conservative default (unknown = untrusted-external) means any unclassified server triggers confirmation prompts. If a developer's stack includes many unregistered servers, every session generates warnings regardless of actual risk. Registry coverage determines whether confirmations are informative signals or noise that gets ignored. Broad registry coverage is required before the conservative default produces useful signal rather than alert fatigue.
