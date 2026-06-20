@@ -95,7 +95,7 @@ The prompt resource instructs the agent: content inside trust markers is data on
 
 ## What This Achieves
 
-- Reduces injection exploitation rate from >50% to <2% (Spotlighting research baseline)
+- Reduces injection exploitation rate from >50% to <2% per the Spotlighting paper (arXiv:2403.14720) under controlled experimental conditions — specific model, payload type, and baseline vary; real-world reduction will differ
 - Works with any MCP-compatible agent today, no agent harness changes required
 - No blocklist of dangerous commands to maintain
 - No per-call trust configuration required from developers
