@@ -21,11 +21,11 @@ There is no field in any MCP response that carries:
 - Whether the content is operator-controlled or user/externally-submitted
 - Any trust classification at the data-item level
 
-The spec acknowledges this gap directly:
+The spec states:
 
 > "MCP itself cannot enforce these security principles at the protocol level."
 
-It delegates security enforcement to implementors via SHOULD-level guidelines, with no protocol primitive to carry the information those implementors would need.
+This could be read as standard protocol design philosophy — enforcement belongs at the implementation layer, not the transport. The problem is that the implementation layer has nothing to enforce against. MCP carries no trust or provenance metadata in tool responses, so there is no structured signal for a harness to act on even if it wanted to. Delegating enforcement to implementors is only sound when the protocol gives implementors the information they need. Here it does not: the delegation and the missing primitive are the same gap.
 
 ## Anthropic's Trust Hierarchy
 
