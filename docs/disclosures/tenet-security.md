@@ -1,7 +1,8 @@
 # Known Disclosure: Tenet Security — Agentjacking via Sentry
 
 **Source:** https://tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/
-**Status:** Public disclosure. Figures are self-reported by Tenet Security and have not been independently replicated.
+**Published:** April 2025 (Tenet Security blog)
+**Status:** Public disclosure. All claims are sourced from Tenet Security's disclosure and have not been independently replicated or verified.
 
 ---
 
@@ -31,4 +32,4 @@ Sentry declined to fix the vulnerability at the source, describing it as "techni
 
 ## How This Relates to the Broader Problem
 
-The Sentry DSN is one specific delivery mechanism for the agentjacking attack class. It is notable because DSNs are public by design, require zero authentication to write to, and are consumed through a routine developer workflow (asking an agent to fix errors). It is not the only delivery mechanism — see `problem/attack.md` for the general attack class.
+The Sentry DSN is one specific delivery mechanism for the agentjacking attack class. It is notable because DSNs are necessarily embedded in client-side JS and therefore publicly exposed, require only the DSN itself as a write token — making the authentication barrier effectively zero once the DSN is known — and are consumed through a routine developer workflow (asking an agent to fix errors). It is not the only delivery mechanism — see `problem/attack.md` for the general attack class.

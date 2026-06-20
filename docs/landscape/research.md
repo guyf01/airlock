@@ -6,9 +6,9 @@
 
 **Technique:** Structurally marks untrusted data in prompts using delimiters, encoding (e.g. base64), or special tokens so the model can distinguish data from instructions at a structural level — not just from natural language instruction.
 
-**Result:** Significantly reduces indirect prompt injection success rates compared to unprotected baselines, per the paper's reported figures.
+**Result:** Reduces indirect prompt injection success rates from >50% to <2% in the paper's reported experiments (arXiv:2403.14720). These figures are from controlled conditions testing RAG/document-grounded QA pipelines — not MCP tool response pipelines. Transfer to MCP contexts is plausible but not yet demonstrated empirically.
 
-**What it actually does:** Spotlighting marks content as coming from an external source — this is itself a trust classification. What it does not do is carry fine-grained provenance: which server, which endpoint, which specific data items within a response. It treats all external content as a single category.
+**What it actually does:** Spotlighting marks content as coming from an external source — this is itself a trust classification. What it does not do is carry fine-grained provenance: which server, which endpoint, which specific data items within a response. It treats all external content as a single category. Spotlighting is also downstream of classification: it applies structural markers once provenance is known, but does not itself determine provenance. The classification problem must be solved first.
 
 **Current limitation:** Applied at prompt construction time for untrusted text in the input. Not designed for MCP tool responses specifically.
 

@@ -7,7 +7,8 @@
 - JSON-RPC 2.0 message format with stateful connections
 - Server and client capability negotiation
 - Tool definitions with schemas
-- Prompt resources (servers can suggest system prompt additions to clients)
+- Prompts (reusable prompt templates servers expose for clients to incorporate into requests)
+- Resources (data blobs — files, database records, live data — servers expose for clients to read)
 - Resources and sampling primitives
 - Authorization via OAuth 2.0 / OpenID Connect alignment
 - Progress tracking, cancellation, error reporting, logging
