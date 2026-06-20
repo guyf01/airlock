@@ -2,7 +2,7 @@
 
 ## Where Solutions Intercept
 
-Solutions fall into two categories based on where they sit in the agent's execution flow:
+Solutions fall into three categories based on where they sit in the agent's execution flow:
 
 - **MCP tool response layer** — intercepts content before it enters the agent's context window
 - **LLM API boundary** — intercepts prompts and completions after tool content has already entered context
