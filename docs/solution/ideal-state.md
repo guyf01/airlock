@@ -10,7 +10,7 @@ Taint tracking names what we are trying to approximate: an action should be gate
 
 This defines three distinct zones:
 
-- **Passive observation** — reading and analysing content within the current context, regardless of trust level. Unrestricted. Agents need to read untrusted data to do their job.
+- **Passive observation** — reading and analysing content within the current context, regardless of trust level. Not gated by default — but reading untrusted content populates the context and can influence subsequent turns even without triggering an explicit action.
 - **Active propagation** — summarising into output, passing content forward to other tools or turns. Should preserve trust attribution so downstream consumers know the content originated from an untrusted source. Summarisation is not neutral: an agent that summarises a prompt-injected event may carry the injected instruction forward into the next context window.
 - **Action** — executing code, installing packages, writing files, pushing to remotes, accessing credentials. Requires a gate when the triggering instruction originated from untrusted content.
 
@@ -19,7 +19,7 @@ This defines three distinct zones:
 - Every piece of data flowing through an agentic system carries a trust classification reflecting its origin
 - That classification is enforced at the execution layer — not in the model's reasoning, not in natural language instructions, but structurally, below the model
 - Actions triggered by untrusted content either require explicit human confirmation or are blocked entirely
-- Agents that read a Sentry event containing "run npm install attacker/pkg" summarise the error and propose a fix — they do not execute the instruction
+- Agents that read an issue comment containing malicious instructions summarise the content and propose a fix — they do not execute the embedded instruction
 
 ## Informed Confirmation, Not Blind Confirmation
 
@@ -35,6 +35,6 @@ Critically, this signal must come from the infrastructure layer — the proxy or
 
 ## Why Full Taint Tracking Is Not Yet Possible
 
-The causal connection between "read a Sentry event" and "run npm install" passes through the model's implicit reasoning. There is no explicit data flow graph. Unlike traditional taint tracking in compiled code, there is no AST or IR to instrument. The model synthesises a response from everything in its context window simultaneously — attributing a specific action to a specific input is probabilistic, not deterministic.
+The causal connection between reading untrusted content and taking an action passes through the model's implicit reasoning. There is no explicit data flow graph to instrument. Traditional taint tracking works because compiled programs operate as discrete data flows through addressable memory — you can tag a memory cell as tainted and follow it. LLM inference is a continuous numerical computation: the model's intermediate states are distributed across billions of floating-point weights, not addressable as token-level attributions. Attributing a specific action to a specific input is probabilistic, not deterministic.
 
 The structural marking approach (marking untrusted content at ingress, enforcing at the action layer) is an approximation: it catches the case where injected instructions directly trigger an action, but cannot trace more subtle causal paths where untrusted content influences reasoning across multiple turns. Closing that gap fully requires either interpretability advances that can trace causal influence inside model weights, or architectural changes that keep untrusted data in a structurally isolated channel the model cannot act on directly.
