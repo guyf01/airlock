@@ -12,7 +12,7 @@ What is also missing is any runtime mechanism that acts on even the structural p
 
 ## Why No Current Layer Addresses This
 
-**Data source (Sentry, GitHub, etc.)**
+**Data source layer**
 Some sources accept public writes by design — that is their purpose. You cannot make the data source responsible for how agents trust its output. A platform that accepts public writes cannot be expected to prevent those writes from being read by an AI agent that has been configured to trust it.
 
 **The LLM model itself**
