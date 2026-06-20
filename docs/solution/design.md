@@ -68,7 +68,7 @@ Unknown servers and endpoints default to `untrusted-external`.
 Developers can override registry classifications locally via a project-level config file. Local overrides take precedence over the community registry and allow teams to assign trust to internal tools, private MCP servers, and any server where the registry classification is wrong for their specific context:
 
 ```yaml
-# .agentjacking.yml (project-level)
+# .airlock.yml (project-level)
 overrides:
   internal-metrics-server:
     get_dashboard: trusted        # our own data, not user-submitted

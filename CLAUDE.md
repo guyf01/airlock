@@ -1,8 +1,8 @@
-# Agentjacking Project
+# Airlock
 
 ## What This Is
 
-A two-component security tool targeting the agentjacking attack class — malicious instructions injected into external data sources that AI coding agents read via MCP and execute.
+A two-component security tool targeting the agentjacking attack class (prompt injection via MCP) — malicious instructions injected into external data sources that AI coding agents read via MCP and execute.
 
 **Component 1:** MCP proxy — classifies tool responses by trust level, applies Spotlighting markers, surfaces confirmation prompts to developers before risky actions.
 
@@ -44,7 +44,7 @@ Three levels used throughout:
 
 **Proxy attribution:** The proxy cannot claim "this action was triggered by untrusted content" — the causal chain passes through the model's reasoning. It can only observe "untrusted content was present this session." Confirmation prompts must reflect this.
 
-**Local overrides:** Developers can override community registry classifications via `.agentjacking.yml` at the project root. Local overrides take precedence over the registry. They are never submitted to the community registry.
+**Local overrides:** Developers can override community registry classifications via `.airlock.yml` at the project root. Local overrides take precedence over the registry. They are never submitted to the community registry.
 
 **Spotlighting numbers:** The >50% to <2% reduction figures come from arXiv:2403.14720 under controlled experimental conditions. Always cite with this caveat — do not present as a production guarantee.
 
