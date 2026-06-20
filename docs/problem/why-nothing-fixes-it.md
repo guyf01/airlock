@@ -24,16 +24,16 @@ The harness orchestrates the model — it calls the model, receives tool-call re
 **MCP protocol**
 MCP carries no trust or provenance metadata for tool responses. There is no field in any MCP response that indicates whether the content is operator-controlled or user/externally-submitted. The 2026 MCP spec added distributed tracing and auth hardening but explicitly did not address tool response provenance. The harness therefore has no structured signal to enforce policy on, even if it wanted to.
 
-## Why This Is Structurally Hard
+## Why a Fix Requires Coordinated Change
 
-The difficulty is not identifying the problem — it is that fixing it requires coordination across multiple parties simultaneously:
+A complete fix requires changes across multiple layers simultaneously:
 
 - MCP would need to define what trust metadata looks like
 - MCP server authors would need to annotate their responses
 - Agent harnesses would need to enforce policies based on those annotations
-- The model may need training changes to respect structural trust delimiters reliably
+- Models may need training to reliably respect structural trust delimiters
 
-None of these parties have moved because none of the others have moved first. The problem is in the gap between them.
+None of these layers has addressed this yet. Whether the reason is coordination friction, security not being a commercial priority, the attack class being underappreciated, or the ecosystem simply moving faster than security can follow — we don't know. What is observable is that all four layers remain unaddressed, and any single-layer fix is insufficient without the others.
 
 ## The Analogy That Illustrates the Gap
 
