@@ -33,7 +33,7 @@ Agentjacking is an attack class that hijacks AI coding agents into executing att
 
 Any MCP tool that returns content from a source accepting untrusted writes is a potential vector:
 
-- Error monitoring platforms (publicly writable via design)
+- Error monitoring platforms (writable by application code that processes user input — the injection travels through the application, not directly to the platform)
 - GitHub issues, PR descriptions, commit messages
 - Linear / Jira tickets
 - Slack messages in monitored channels
