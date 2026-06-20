@@ -25,11 +25,13 @@ This defines three distinct zones:
 
 Requiring confirmation before acting is not sufficient on its own. A user who sees "should I run this?" with no context will approve it out of habit. That is security theatre, not security.
 
-In the ideal state, when an agent is about to take an action triggered by untrusted content, the user sees that fact explicitly and prominently:
+In the ideal state, when an agent is about to take an action while untrusted external content is present in the session, the user sees that fact explicitly and prominently:
 
-> "This action was suggested by content from an untrusted external source (Sentry event). Review it carefully before approving."
+> "Untrusted external content was read during this session. Review this action carefully before approving."
 
-Critically, this attribution must come from the infrastructure layer — the proxy or harness knows which tool responses were classified as untrusted and surfaces that at the confirmation step independently of what the model says. Asking the model to self-report whether it was influenced by injected content is circular: a model acting under injection will not reliably disclose it. The confirmation is only meaningful when the provenance signal comes from outside the model's own reasoning.
+The proxy cannot determine which specific content caused which action — that causal chain passes through the model's reasoning. What it can determine is that untrusted content was present and an action is now being requested. That is sufficient to trigger a meaningful confirmation.
+
+Critically, this signal must come from the infrastructure layer — the proxy or harness knows which tool responses were classified as untrusted and surfaces that at the confirmation step independently of what the model says. Asking the model to self-report whether it was influenced by injected content is circular: a model acting under injection will not reliably disclose it. The confirmation is only meaningful when the provenance signal comes from outside the model's own reasoning.
 
 ## Why Full Taint Tracking Is Not Yet Possible
 
