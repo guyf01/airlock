@@ -4,6 +4,16 @@
 
 Agentjacking is an attack class that hijacks AI coding agents into executing attacker-controlled code by injecting malicious instructions into external data sources the agent reads. MCP is the most common delivery mechanism, as it is the primary way coding agents connect to external tools.
 
+## Threat Model
+
+**Attacker:** Anyone who can write to a data source the target's agent reads. No access to the developer's systems, credentials, or network is required. No exploitation of a software vulnerability is required.
+
+**Capability required:** Write access to one external source — a public issue tracker, an error monitoring platform, a shared log, a database accepting user input. Many such sources accept writes from unauthenticated parties by design.
+
+**Target:** Any developer running an AI coding agent connected to external tools via MCP.
+
+**Goal:** Cause the agent to execute attacker-chosen operations with the developer's full environment access — exfiltrating credentials, modifying code, installing packages, or interacting with external services.
+
 ## The General Attack Pattern
 
 1. **Identify an injection point** — Find an external data source the target's agent reads via MCP that accepts writes from untrusted parties (publicly writable APIs, issue trackers, error monitoring, log aggregators).
