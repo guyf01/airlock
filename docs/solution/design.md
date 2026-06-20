@@ -60,7 +60,7 @@ github:
 
 filesystem:
   read_file: context-dependent  # files may contain third-party or user-controlled content
-  write_file: trusted           # writing is operator-initiated
+  write_file: context-dependent  # content being written may originate from untrusted sources
 ```
 
 Unknown servers and endpoints default to `untrusted-external`.
