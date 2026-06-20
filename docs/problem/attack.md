@@ -2,7 +2,7 @@
 
 ## What It Is
 
-Agentjacking is an attack class that hijacks AI coding agents into executing attacker-controlled code by injecting malicious instructions into external data sources the agent reads. MCP is the most common delivery mechanism, as it is the primary way coding agents connect to external tools.
+Agentjacking is an attack class that hijacks AI coding agents into executing attacker-controlled code by injecting malicious instructions into external data sources the agent reads. MCP is the dominant delivery mechanism for coding agents, as it is the primary way coding agents connect to external tools.
 
 ## Threat Model
 
