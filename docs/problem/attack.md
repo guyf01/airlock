@@ -16,7 +16,7 @@ Agentjacking is an attack class that hijacks AI coding agents into executing att
 
 - The agent's tool responses come from sources developers consider part of their trusted workflow
 - The attack requires no breach of the developer's systems — only write access to a source the agent reads
-- Traditional security controls (WAF, EDR, IAM, firewalls) see only authorised actions taken by a legitimate tool; they cannot detect that those actions originated from injected instructions
+- Traditional security controls (WAF, EDR, IAM, firewalls) see authorised actions taken by a legitimate tool; they lack the signal to attribute those actions to injected instructions at the point of content ingestion, where the attack actually occurs
 - The attack succeeds through normal operation, not exploitation of a software bug
 
 ## Delivery Mechanisms
