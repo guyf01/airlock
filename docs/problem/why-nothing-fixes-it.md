@@ -4,9 +4,11 @@
 
 Agentic systems lack enforcement of information flow policies.
 
-The context window preserves structural provenance — the model receives tool responses in clearly delineated blocks and knows which tool produced which result (e.g. `sentry.get_issue_events`). Provenance is not lost.
+The context window preserves structural provenance — the model receives tool responses in clearly delineated blocks and knows which tool produced which result. Provenance at the response boundary is not lost.
 
-What is missing is any runtime mechanism that *acts on* that provenance. The model can distinguish where data came from but has no enforced policy preventing it from treating instructions embedded within untrusted content as actionable. Knowing the source does not stop the model from following instructions found within it.
+What is absent is content-level provenance: within a single tool response, there is no structural signal distinguishing legitimate content from injected instructions. The model cannot tell which tokens were authored by the data source and which were written by an attacker. A 2,000-token error event and an 8-token injected command inside it are indistinguishable at the token level.
+
+What is also missing is any runtime mechanism that acts on even the structural provenance that does exist. The model can identify which tool produced a response block but has no enforced policy preventing it from treating instructions embedded within that block as actionable. Knowing the source does not stop the model from following instructions found within it.
 
 ## Why No Current Layer Addresses This
 
