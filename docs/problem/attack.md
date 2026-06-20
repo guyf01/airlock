@@ -9,7 +9,7 @@ Agentjacking is an attack class that hijacks AI coding agents into executing att
 1. **Identify an injection point** — Find an external data source the target's agent reads via MCP that accepts writes from untrusted parties (publicly writable APIs, issue trackers, error monitoring, log aggregators).
 2. **Inject a payload** — Write crafted content to that source, designed to appear as legitimate data while embedding instructions directed at the agent.
 3. **Wait for the trigger** — The developer asks their agent to perform a routine task that causes it to read from the compromised source.
-4. **Exploitation** — The agent reads the injected content and, despite knowing it came from a tool response, has no enforcement mechanism preventing it from acting on instructions embedded within it.
+4. **Exploitation** — The agent reads the injected content and, despite receiving it through a delineated tool response block, has no enforcement mechanism preventing it from acting on instructions embedded within it.
 5. **Impact** — The agent executes attacker-controlled code with the developer's full environment access, potentially exfiltrating credentials, secrets, and source code.
 
 ## Why This Attack Class Is Effective
