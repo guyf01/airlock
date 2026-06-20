@@ -2,7 +2,7 @@
 
 ## What It Is
 
-Code mode is an MCP server design pattern introduced by Cloudflare that solves a token scaling problem. Large APIs can have thousands of endpoints. A traditional MCP server exposes each endpoint as a named tool — the Cloudflare API has 2,500+ endpoints, which would consume ~1.17 million tokens just in tool definitions, exceeding most models' context windows entirely.
+Code mode is an MCP server design pattern introduced by Cloudflare that solves a token scaling problem. Large APIs can have thousands of endpoints. A traditional MCP server exposes each endpoint as a named tool — the Cloudflare API has 2,500+ endpoints, which would consume ~1.17 million tokens just in tool definitions, exceeding most models' context windows entirely. (Figures from Cloudflare's code mode announcement: https://blog.cloudflare.com/code-mode-mcp/)
 
 Code mode's solution: collapse the entire API surface to two tools.
 
@@ -35,10 +35,10 @@ Cloudflare Code Mode MCP Server
 
 ## Current State (2026)
 
-- Closed beta as of early 2026
-- Currently specific to the Cloudflare API
+- Closed beta as of early 2026 (per https://blog.cloudflare.com/code-mode-mcp/)
+- Currently deployed only for the Cloudflare API
 - Not yet a general-purpose pattern adopted by other MCP server authors
-- Cloudflare has published the design publicly; others could implement it
+- The architectural pattern is public; others could implement a structurally similar approach using equivalent sandboxing infrastructure
 
 ## Why It Matters
 

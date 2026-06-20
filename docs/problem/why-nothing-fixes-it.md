@@ -33,10 +33,10 @@ A complete fix requires changes across multiple layers simultaneously:
 - Agent harnesses would need to enforce policies based on those annotations
 - Models may need training to reliably respect structural trust delimiters
 
-None of these layers has addressed this yet. Whether the reason is coordination friction, security not being a commercial priority, the attack class being underappreciated, or the ecosystem simply moving faster than security can follow — we don't know. What is observable is that all four layers remain unaddressed, and any single-layer fix is insufficient without the others.
+None of these layers has addressed this yet. Whether the reason is coordination friction, security not being a commercial priority, the attack class being underappreciated, or the ecosystem simply moving faster than security can follow — we don't know. What is observable is that none of these layers has implemented systematic trust provenance enforcement. Partial mitigations exist — permission prompts before destructive actions, sandbox restrictions, model-level instruction hierarchy training — but none address the root issue of attributing actions to their content origin. Any single-layer fix remains insufficient without the others.
 
 ## The Analogy That Illustrates the Gap
 
-SQL injection persisted not because nobody understood parameterised queries, but because the structural separation of data from instructions had to become a default — enforced by frameworks, ORMs, and tooling — before it actually protected anyone. Understanding the fix and having the ecosystem enforce the fix are two different things.
+SQL injection was substantially reduced — though not eliminated, it remains in the OWASP Top 10 — when parameterised queries became a framework-enforced default rather than a developer choice. Understanding the fix and having the ecosystem enforce the fix are two different things.
 
-The same gap exists here, with one important difference: parameterised queries required change at one layer. This problem requires coordinated change across the MCP spec, MCP server authors, and agent harnesses simultaneously — a harder coordination problem.
+The same gap exists here, with one important difference: parameterised queries required change at one layer. This problem requires coordinated change across the MCP spec, MCP server authors, agent harnesses, and potentially model training simultaneously — a harder coordination problem.

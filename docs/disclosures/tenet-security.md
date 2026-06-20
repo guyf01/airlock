@@ -20,13 +20,13 @@ Tenet Security demonstrated a concrete instance of the agentjacking attack class
 
 ### Figures They Reported
 
-- **85%** exploitation success rate across Claude Code, Cursor, and Codex in their controlled testing
+- **85%** exploitation success rate across Claude Code, Cursor, and Codex in their controlled testing (sample size, test methodology, and per-agent breakdown not disclosed by Tenet Security)
 - **2,388** organizations with publicly exposed Sentry DSNs identified at time of disclosure
 - Exploitation succeeded even when agents were explicitly instructed via system prompt to ignore untrusted data
 
 ### Sentry's Response
 
-Sentry declined to fix the vulnerability at the source, describing it as "technically not defensible" at their layer.
+Sentry declined to fix the vulnerability at the source, characterising it as not defensible at their layer (per Tenet Security's account — no independent Sentry statement has been verified).
 
 ---
 

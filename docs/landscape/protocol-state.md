@@ -36,8 +36,8 @@ Critically, this hierarchy stops at the message boundary. It does not extend int
 
 ## Relevant IETF Drafts (Proposed, Not Deployed)
 
-- `draft-tonyai-a2a-trust-00` — Agent-to-agent identity and authorisation. Covers agent identity, not data item provenance.
-- `draft-kamimura-vap-framework` — Verifiable AI Provenance. Covers decision-level audit trails, not data content classification.
-- `draft-sharif-agent-audit-trail-00` — Standard logging format for autonomous AI. Audit, not prevention.
+- `draft-tonyai-a2a-trust-00` — Agent-to-agent identity and authorisation. Covers agent identity, not data item provenance. (https://datatracker.ietf.org/doc/draft-tonyai-a2a-trust/)
+- `draft-kamimura-vap-framework-00` — Verifiable AI Provenance. Covers decision-level audit trails, not data content classification. (https://datatracker.ietf.org/doc/draft-kamimura-vap-framework/)
+- `draft-sharif-agent-audit-trail-00` — Standard logging format for autonomous AI. Audit, not prevention. (https://datatracker.ietf.org/doc/draft-sharif-agent-audit-trail/)
 
 None of these address trust classification of individual data items within tool responses. All are proposals without deployed implementations.

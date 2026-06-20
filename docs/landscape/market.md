@@ -13,10 +13,10 @@ Solutions fall into three categories based on where they sit in the agent's exec
 ## MCP Tool Response Layer
 
 ### Bifrost (getmaxim.ai)
-Open-source, Go-based MCP gateway. Sits between the agent and MCP servers. Fires guardrails at both ingress and egress. Blocks known injection patterns (hardcoded strings, hidden Unicode, imperative phrases like "ignore previous instructions"). Supports MCP tool allowlists per virtual key.
+Open-source, Go-based MCP gateway. Sits between the agent and MCP servers. Fires guardrails at both ingress and egress. Blocks known injection patterns (hardcoded strings, hidden Unicode, imperative phrases like "ignore previous instructions"). Supports MCP tool allowlists per virtual key. ([GitHub](https://github.com/maximai/bifrost))
 
 ### lasso-security/mcp-gateway (GitHub)
-Plugin-based proxy wrapping other MCP servers. Sanitises requests and responses, masks sensitive tokens. Lighter feature set than Bifrost.
+Plugin-based proxy wrapping other MCP servers. Sanitises requests and responses, masks sensitive tokens. ([GitHub](https://github.com/lasso-security/mcp-gateway))
 
 ### revsmoke/promptrejectormcp (GitHub)
 An MCP server the agent calls to classify tool output for injection patterns. Detects imperative language, "ignore previous", hidden Unicode. Fatal design flaw: the agent must be configured to call it — a compromised agent will not call its own injection checker. This design cannot defend against the attack class it targets.
@@ -26,7 +26,7 @@ An MCP server the agent calls to classify tool output for injection patterns. De
 ## LLM API Boundary
 
 ### Portkey, LiteLLM, Helicone
-Intercept at the LLM API level — prompts sent to the model and completions returned. Tool response content has already entered the context by the time they see it. Primarily useful for observability, rate limiting, and cost management.
+Intercept at the LLM API level — prompts sent to the model and completions returned. Tool response content has already entered the context by the time they see it. LiteLLM is an open-source routing and cost-management proxy; Portkey adds semantic guardrails and observability; Helicone focuses on logging and analytics. All are primarily useful for observability, rate limiting, and cost management — not injection prevention.
 
 ---
 
@@ -52,6 +52,6 @@ Semantic taint tracking framework for LLM agents. Tracks how untrusted data prop
 
 ## The Gap
 
-All production solutions share the same underlying limitation: none classify MCP tool responses by data provenance — distinguishing operator-controlled content from user-submitted or externally-sourced content — at the endpoint level, in real-time, before that content enters the agent's context window.
+This is a representative survey, not an exhaustive one. All production solutions reviewed share the same underlying limitation: none classify MCP tool responses by data provenance — distinguishing operator-controlled content from user-submitted or externally-sourced content — at the endpoint level, in real-time, before that content enters the agent's context window.
 
 Pattern matching (Bifrost, lasso) catches known payloads but not novel ones. Post-execution monitoring (Straiker, Obsidian) detects consequences but does not prevent them. Agent-side classifiers (revsmoke) depend on the compromised party to run its own security check.

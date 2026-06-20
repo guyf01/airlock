@@ -12,7 +12,7 @@ A reference implementation with real users is a stronger argument for a protocol
 - OAuth came from working implementations at Twitter and Flickr
 - MCP itself followed this path — Anthropic built it and drove adoption before it became a standard
 
-These are survivors. Many implementation-first projects failed to become standards. What the successful cases share: a concrete problem with no existing solution, vendor backing with genuine adoption incentive, and a neutral governance body willing to take the spec. Writing a spec proposal without a working system invites debate about whether it is necessary or correct. A proxy with adoption makes the need undeniable and the design concrete.
+These are survivors. Many implementation-first projects failed to become standards. What the successful cases share: a concrete problem with no existing solution, vendor backing with genuine adoption incentive, and a neutral governance body willing to take the spec. This project has the first two — the problem is real and unaddressed, and Airlock itself provides the adoption incentive. The third is covered: MCP is now governed by the Linux Foundation, an established neutral body with a track record of taking working implementations into standards. Writing a spec proposal without a working system invites debate about whether it is necessary or correct. A proxy with adoption makes the need undeniable and the design concrete.
 
 ## The Migration Path
 

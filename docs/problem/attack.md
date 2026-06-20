@@ -39,9 +39,9 @@ Any MCP tool that returns content from a source accepting untrusted writes is a 
 - Slack messages in monitored channels
 - Log files with user-controlled entries
 - Database records containing user input
-- Any web page the agent browses
+- Web pages served via MCP browser tools (the page author controls what the agent reads, and pages may contain adversarial content targeting AI agents — a related but distinct vector from data source injection)
 
-The lowest-friction vectors are those where writing is unauthenticated or trivially authenticated by design.
+The lowest-friction vectors are those where an attacker can write without a verified identity tied to the target's organisation — public issue trackers, unauthenticated ingest endpoints, or platforms where account creation has no meaningful barrier.
 
 ## Known Real-World Disclosures
 
