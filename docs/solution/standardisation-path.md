@@ -23,11 +23,13 @@ Proxy protects developers today. No changes required from MCP servers or agent h
 Server authors adopt the SDK and self-annotate their endpoints. More accurate than the registry because they know their own data provenance. Proxy defers to native annotations when present.
 
 **Phase 3 — Spec contribution**
-Once the pattern is established and adopted across multiple popular MCP servers, submit to the MCP spec. The reference implementation produces the concrete wire format — field names, schema, encoding, versioning — that becomes the actual input to the spec proposal. The principle is straightforward:
+Once the pattern is established and adopted across multiple popular MCP servers, propose the addition to the MCP spec through the Linux Foundation governance process. Anthropic donated MCP to the Linux Foundation, so the spec is no longer Anthropic-controlled — contributions go through an open governance process rather than requiring a single vendor's approval. The credibility argument is: here is a working implementation, here is real adoption, here is the wire format — the design is already proven in production.
+
+The reference implementation produces the concrete wire format — field names, schema, encoding, versioning — that becomes the actual input to the proposal. The principle is straightforward:
 
 > "MCP servers MAY include trust provenance metadata in tool responses. Clients SHOULD enforce trust policies based on this metadata. When absent, clients SHOULD apply conservative defaults (treat as untrusted-external)."
 
-But spec language without a working implementation behind it is a principle, not a standard. The schema definition is work that comes after the proxy proves the concept in production.
+Spec language without a working implementation behind it is a principle, not a standard. The schema definition is work that comes after the proxy proves the concept in production.
 
 **Phase 4 — Native harness enforcement**
 Agent harnesses (Claude Code, Cursor, Codex) enforce trust policies at the execution layer rather than the prompt layer. This moves enforcement below the model — the only path to near-zero exploitation rate. Our proxy becomes a thin pass-through or is no longer needed.
