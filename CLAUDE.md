@@ -4,7 +4,7 @@
 
 A two-component security tool targeting the agentjacking attack class (prompt injection via MCP) — malicious instructions injected into external data sources that AI coding agents read via MCP and execute.
 
-**Component 1:** MCP proxy — two-layer design. Layer 1 (inbound): classifies tool responses by source trust level, applies randomized Spotlighting markers to assist model reasoning, stores untrusted content in session state. Layer 2 (outbound): intercepts tool calls, fuzzy-matches action content against session store, surfaces high-confidence injection findings to developers. Neither layer enforces — both layers improve the probability of correct outcomes and surface evidence.
+**Component 1:** MCP proxy — classifies tool responses by source trust level, wraps untrusted content in randomized per-session Spotlighting markers, and injects a prompt resource at session start that gives the model a baseline posture of skepticism toward all external data with heightened scrutiny for marked content. Only untrusted content is marked — trusted content passes through without annotation, making no positive safety claim about it.
 
 **Component 2:** MCP Server SDK — library for server authors to self-annotate their endpoints with trust levels natively. Proxy defers to native annotations when present.
 

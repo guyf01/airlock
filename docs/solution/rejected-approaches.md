@@ -50,7 +50,7 @@ Microsoft FIDES faces this same problem and solves it by dropping the per-action
 
 **What would change our mind:** Model interpretability advances that expose per-token contribution to output — "attention attribution" or similar. If a future model API exposes a structured signal indicating which input tokens most influenced a given output, per-action attribution becomes tractable. This is an active research area but is not available in current production model APIs.
 
-**Current status:** Rejected. Revisit when model interpretability APIs become available.
+**Current status:** Rejected as a primary mechanism. A lighter variant — fuzzy content matching between outbound tool calls and stored untrusted session content — was considered as a secondary detection layer but deprioritized: if Layer 0 (LLM-as-judge pre-filter) is in place, content matching covers a strict subset of what the judge already catches, adding complexity without proportionate coverage. Revisit if model interpretability APIs become available.
 
 ---
 
