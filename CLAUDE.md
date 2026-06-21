@@ -4,7 +4,7 @@
 
 A two-component security tool targeting the agentjacking attack class (prompt injection via MCP) — malicious instructions injected into external data sources that AI coding agents read via MCP and execute.
 
-**Component 1:** MCP proxy — classifies tool responses by trust level, applies Spotlighting markers, surfaces confirmation prompts to developers before risky actions.
+**Component 1:** MCP proxy — two-layer design. Layer 1 (inbound): classifies tool responses by source trust level, applies randomized Spotlighting markers to assist model reasoning, stores untrusted content in session state. Layer 2 (outbound): intercepts tool calls, fuzzy-matches action content against session store, surfaces high-confidence injection findings to developers. Neither layer enforces — both layers improve the probability of correct outcomes and surface evidence.
 
 **Component 2:** MCP Server SDK — library for server authors to self-annotate their endpoints with trust levels natively. Proxy defers to native annotations when present.
 
@@ -42,11 +42,15 @@ Three levels used throughout:
 
 ## Key Design Decisions and Rationale
 
-**Proxy attribution:** The proxy cannot claim "this action was triggered by untrusted content" — the causal chain passes through the model's reasoning. It can only observe "untrusted content was present this session." Confirmation prompts must reflect this.
+**Proxy attribution:** The proxy cannot claim "this action was triggered by untrusted content" — the causal chain passes through the model's reasoning, which is not attributable from the outside. Layer 2 (content matching) makes a narrower, honest claim: "this action content has high string similarity to known untrusted content." That is a finding, not a causal proof.
+
+**Spotlighting is judgment assist, not enforcement:** Markers give the model the correct signal to reason about trust. A well-reasoning model with markers performs better than without. But the model's compliance is not guaranteed — a sufficiently adversarial payload can attempt to override the trust instruction in the same context channel. Markers are randomized per-session and content is sanitized before wrapping to prevent attacker marker injection. Do not describe Spotlighting as preventing agentjacking — it reduces its probability.
+
+**Content matching scope:** Layer 2 catches literal injection (attacker content reproduced verbatim or near-verbatim in a tool call). It does not catch natural language instruction injection (attacker writes in natural language, model generates its own action). The latter class has no proxy-level defense.
 
 **Local overrides:** Developers can override community registry classifications via `.airlock.yml` at the project root. Local overrides take precedence over the registry. They are never submitted to the community registry.
 
-**Spotlighting numbers:** The >50% to <2% reduction figures come from arXiv:2403.14720 under controlled experimental conditions. Always cite with this caveat — do not present as a production guarantee.
+**Spotlighting numbers:** The >50% to <2% reduction figures come from arXiv:2403.14720 under controlled RAG pipeline experimental conditions. Transfer to MCP contexts is unverified. Always cite with this caveat — do not present as a production guarantee.
 
 **Registry governance:** Asymmetric burden — downgrading from untrusted-external requires stronger justification than upgrading toward it. Missing/disputed entries default to untrusted-external.
 
@@ -69,3 +73,6 @@ If code mode becomes the dominant MCP server pattern industry-wide, the per-endp
 - Using Sentry as the example throughout docs — the attack class is general; Sentry is one disclosure.
 - Claiming code mode is Anthropic's or describing it as replacing MCP — it's Cloudflare's, built on MCP.
 - `write_file: trusted` — wrong. Content being written may come from untrusted sources.
+- Claiming Airlock prevents agentjacking — it does not enforce. Correct claim: reduces exploitation probability (Layer 1) and surfaces high-confidence injection evidence (Layer 2).
+- Describing Spotlighting markers as enforcement — they are structural signals that assist model reasoning. A sufficiently adversarial payload can attempt to override them.
+- Claiming Layer 2 content matching catches all injection — it catches literal propagation only. Natural language instruction injection (model generates its own actions from injected intent) is outside the scope of what a proxy can catch.
