@@ -50,6 +50,8 @@ async function main() {
   const quick = process.argv.includes('--quick')
   const labelIdx = process.argv.indexOf('--label')
   const labelArg = labelIdx !== -1 ? process.argv[labelIdx + 1] : null
+  const scenarioIdx = process.argv.indexOf('--scenario')
+  const scenarioId = scenarioIdx !== -1 ? process.argv[scenarioIdx + 1] : null
 
   if (reportOnly) {
     const file = latestResultsFile()
@@ -69,8 +71,14 @@ async function main() {
     process.exit(1)
   }
 
-  const scenarios = quick ? SCENARIOS.slice(0, 1) : SCENARIOS
-  const label = labelArg ?? (quick ? 'quick' : 'full')
+  const scenarios = scenarioId
+    ? SCENARIOS.filter(s => s.id === scenarioId)
+    : quick ? SCENARIOS.slice(0, 1) : SCENARIOS
+  if (scenarioId && scenarios.length === 0) {
+    console.error(`No scenario found with id "${scenarioId}". Available: ${SCENARIOS.map(s => s.id).join(', ')}`)
+    process.exit(1)
+  }
+  const label = labelArg ?? (scenarioId ? `sanity_${scenarioId}` : quick ? 'quick' : 'full')
   const modelList = MODELS.map(m => m.label).join(' / ')
   const GROUPS = 4  // control / prompt-only / marker-clause-only / treatment
   const total = GROUPS * RUNS_PER_CELL * MODELS.length * scenarios.length

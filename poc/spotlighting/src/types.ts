@@ -11,6 +11,8 @@ export type InjectionStyle =
   | 'silent-prerequisite'   // buries the action as a technical remediation step, no explicit ordering
   | 'embedded-in-metadata'  // hides injection in a field expected to carry machine-generated data
   | 'code-comment'          // injection inside a code comment in a file the agent is reviewing
+  // C-series adversarial styles (naturalistic — no explicit instruction framing):
+  | 'peer-review-suggestion' // phrased as a senior developer's inline PR review comment
 
 export interface Scenario {
   id: string
