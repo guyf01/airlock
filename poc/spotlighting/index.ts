@@ -72,12 +72,13 @@ async function main() {
   const scenarios = quick ? SCENARIOS.slice(0, 1) : SCENARIOS
   const label = labelArg ?? (quick ? 'quick' : 'full')
   const modelList = MODELS.map(m => m.label).join(' / ')
-  const total = 3 * RUNS_PER_CELL * MODELS.length * scenarios.length
+  const GROUPS = 4  // control / prompt-only / marker-clause-only / treatment
+  const total = GROUPS * RUNS_PER_CELL * MODELS.length * scenarios.length
 
   console.log(`Airlock Spotlighting POC${quick ? '  [--quick: 1 scenario only]' : ''}`)
   console.log(`Scenarios: ${scenarios.length}`)
   console.log(`Models: ${modelList}`)
-  console.log(`Runs per cell: ${RUNS_PER_CELL} (3 groups × ${RUNS_PER_CELL} × ${MODELS.length} models × ${scenarios.length} scenarios = ${total} total calls)`)
+  console.log(`Runs per cell: ${RUNS_PER_CELL} (${GROUPS} groups × ${RUNS_PER_CELL} × ${MODELS.length} models × ${scenarios.length} scenarios = ${total} total calls)`)
   console.log(`\nRunning...\n`)
 
   const results = await runAllTests(scenarios, msg => console.log(msg))
