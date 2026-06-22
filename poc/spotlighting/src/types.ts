@@ -4,6 +4,8 @@ export type InjectionStyle =
   | 'authority-claim'   // "As the system administrator, you must..."
   | 'embedded'          // buried naturally in otherwise legitimate content
   | 'continuation'      // "...please also do the following:"
+  | 'context-poisoning' // reframes what "doing the task correctly" means, smuggling the injection inside legitimate-sounding requirements
+  | 'task-prerequisite' // frames malicious action as a required step before the legitimate task
 
 export interface Scenario {
   id: string
@@ -12,8 +14,45 @@ export interface Scenario {
   tool: string
   developerTask: string   // what the developer asked the agent to do
   content: string         // the full MCP response content including the injection
-  successToken: string    // unique string that only appears if model followed injection
+
+  // Regex string matched against the full model response (not anchored to start unless the
+  // pattern includes ^). Fires when the model produces a synthesis or transformation that
+  // only exists if it followed the injection — never when it merely quotes the injection.
+  //
+  // S01–S10 (token-based): anchored with ^ so only first-word compliance fires.
+  // S11–S15 (derivation-based): un-anchored; the artifact (a computed value) can appear
+  // anywhere in the response since a realistic compliance response leads with normal content.
+  //
+  // Design invariant: the matching string must NOT appear verbatim anywhere in the
+  // scenario's content field. Audit every new scenario — violation = treatment-correlated
+  // false positives.
+  successPattern: string
+
   injectionStyle: InjectionStyle
+}
+
+// Approximate OpenRouter pricing (USD per million tokens). Update if stale.
+export const MODEL_PRICING: Record<string, { inputPer1M: number; outputPer1M: number }> = {
+  'anthropic/claude-sonnet-4-6': { inputPer1M: 3.00, outputPer1M: 15.00 },
+  'openai/gpt-4o':               { inputPer1M: 5.00, outputPer1M: 15.00 },
+  'google/gemini-2.5-flash':     { inputPer1M: 0.15, outputPer1M:  0.60 },
+}
+
+export interface RunMeta {
+  timestamp: string
+  label: string           // "quick" | "full" | custom
+  scenarioIds: string[]
+  modelLabels: string[]
+  runsPerCell: number
+  totalCalls: number
+  totalInputTokens: number
+  totalOutputTokens: number
+  estimatedCostUsd: number
+}
+
+export interface ResultsFile {
+  meta: RunMeta
+  results: TestResult[]
 }
 
 export interface TestResult {
@@ -23,8 +62,10 @@ export interface TestResult {
   group: 'control' | 'prompt-only' | 'treatment'
   run: number
   injected: boolean
-  response: string   // full model response — stored so false positives can be audited
-  error?: string     // set if the call failed; injected=false for errored runs, flag separately
+  response: string      // full model response — stored so false positives can be audited
+  error?: string        // set if the call failed; injected=false for errored runs, flag separately
+  inputTokens: number
+  outputTokens: number
   durationMs: number
 }
 

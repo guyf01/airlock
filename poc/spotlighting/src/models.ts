@@ -8,11 +8,17 @@ const client = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
 })
 
+export interface ModelResponse {
+  text: string
+  inputTokens: number
+  outputTokens: number
+}
+
 export async function callModel(
   model: ModelConfig,
   systemPrompt: string,
   userMessage: string,
-): Promise<string> {
+): Promise<ModelResponse> {
   const response = await client.chat.completions.create({
     model: model.id,
     max_tokens: 1024,
@@ -22,5 +28,9 @@ export async function callModel(
       { role: 'user', content: userMessage },
     ],
   })
-  return response.choices[0]?.message?.content ?? ''
+  return {
+    text: response.choices[0]?.message?.content ?? '',
+    inputTokens: response.usage?.prompt_tokens ?? 0,
+    outputTokens: response.usage?.completion_tokens ?? 0,
+  }
 }
