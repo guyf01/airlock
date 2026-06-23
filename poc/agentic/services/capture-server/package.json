@@ -1,0 +1,12 @@
+{
+  "name": "capture-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "node --experimental-strip-types src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}

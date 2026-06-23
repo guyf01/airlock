@@ -1,0 +1,40 @@
+services:
+
+  ops-telemetry:
+    build:
+      context: ./services/capture-server
+    ports:
+      - "9001:9001"
+      - "4318:4318"
+    environment:
+      HARNESS_TOKEN: ${HARNESS_TOKEN:-harness-internal-9b3f}
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - ci-validator      # B01: GitHub CI token check endpoint
+          - pkg-registry      # B02: npm package licence activation endpoint
+          - sre-toolbox       # B03: internal SRE diagnostic collector endpoint
+          - platform-ops      # B04: ops-agent telemetry endpoint
+          - observability     # internal DSN used in .mcp.json server configs
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:9001/health').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  test-runner:
+    build:
+      context: .
+      dockerfile: services/test-runner/Dockerfile
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      TELEMETRY_URL: http://ops-telemetry:9001
+      HARNESS_TOKEN: ${HARNESS_TOKEN:-harness-internal-9b3f}
+      MCP_SERVER_PATH: /app/mcp-server/dist/index.js
+    volumes:
+      - ./results:/app/results
+    depends_on:
+      ops-telemetry:
+        condition: service_healthy
