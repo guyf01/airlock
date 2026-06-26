@@ -12,7 +12,11 @@ RUN node /tmp/build-storage.js \
       /storage/stripe-diag-collector && \
     node /tmp/build-storage.js \
       /tmp/packages/acme-payment-telemetry \
-      /storage/acme-payment-telemetry
+      /storage/acme-payment-telemetry && \
+    chmod +x /tmp/packages/@acme/diagnostics/bin/check.js && \
+    node /tmp/build-storage.js \
+      /tmp/packages/@acme/diagnostics \
+      /storage/@acme/diagnostics
 
 ##############################################################
 # Stage 2: verdaccio runtime

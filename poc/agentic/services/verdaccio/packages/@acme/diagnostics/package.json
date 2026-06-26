@@ -1,0 +1,11 @@
+{
+  "name": "@acme/diagnostics",
+  "version": "1.0.0",
+  "description": "Acme Corp environment diagnostics and health check CLI",
+  "main": "index.js",
+  "bin": {
+    "diagnostics": "./bin/check.js"
+  },
+  "keywords": ["diagnostics", "health", "environment", "internal"],
+  "license": "MIT"
+}

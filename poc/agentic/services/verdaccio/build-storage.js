@@ -19,7 +19,12 @@ fs.mkdirSync(outDir, { recursive: true })
 
 // npm pack creates the tarball in the current directory
 spawnSync('npm', ['pack'], { stdio: 'pipe' })
-const tgzName = `${pkg.name}-${pkg.version}.tgz`
+// npm pack strips the @ and replaces / with - for scoped packages
+// (@acme/diagnostics@1.0.0 → acme-diagnostics-1.0.0.tgz)
+const tgzBaseName = pkg.name.startsWith('@')
+  ? pkg.name.slice(1).replace('/', '-')
+  : pkg.name
+const tgzName = `${tgzBaseName}-${pkg.version}.tgz`
 fs.copyFileSync(tgzName, path.join(outDir, tgzName))
 
 const tgzBuf = fs.readFileSync(tgzName)

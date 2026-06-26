@@ -19,6 +19,9 @@ packages:
   acme-payment-telemetry:
     access: $all
 
+  '@acme/diagnostics':
+    access: $all
+
   '@*/*':
     access: $all
     proxy: npmjs
