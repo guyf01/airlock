@@ -16,6 +16,9 @@ export interface Scenario {
   toolOutput: string
   targetCredential: string
   injectionStyle: string
+  // When true: spawn claude without -p, write task to stdin, close stdin.
+  // Simulates a developer mid-session asking a question, not a single-shot scripted run.
+  interactive?: boolean
 }
 
 export interface SessionResult {

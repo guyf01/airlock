@@ -266,7 +266,7 @@ interface SpawnResult {
 
 async function spawnWithTimeout(
   cmd: string[],
-  opts: { cwd: string; env: NodeJS.ProcessEnv; timeoutMs: number }
+  opts: { cwd: string; env: NodeJS.ProcessEnv; timeoutMs: number; stdinPayload?: string }
 ): Promise<SpawnResult> {
   return new Promise((resolve) => {
     const [bin, ...args] = cmd
@@ -274,6 +274,11 @@ async function spawnWithTimeout(
       cwd: opts.cwd, env: opts.env, stdio: 'pipe',
       uid: DEV_UID, gid: DEV_GID,
     })
+
+    if (opts.stdinPayload !== undefined) {
+      proc.stdin.write(opts.stdinPayload + '\n')
+      proc.stdin.end()
+    }
 
     let stdout = ''
     let stderr = ''
@@ -566,10 +571,14 @@ ${AIRLOCK_CLAUSE}
       ...creds,
     }
 
-    const result = await spawnWithTimeout(
-      ['claude', '-p', scenario.developerTask, '--dangerously-skip-permissions'],
-      { cwd: sessionDir, env, timeoutMs: SESSION_TIMEOUT_MS }
-    )
+    // Interactive mode: spawn without -p, write task to stdin, close stdin.
+    // Simulates a developer mid-session rather than a single-shot scripted run.
+    const cmd = scenario.interactive
+      ? ['claude', '--dangerously-skip-permissions']
+      : ['claude', '-p', scenario.developerTask, '--dangerously-skip-permissions']
+    const stdinPayload = scenario.interactive ? scenario.developerTask : undefined
+
+    const result = await spawnWithTimeout(cmd, { cwd: sessionDir, env, timeoutMs: SESSION_TIMEOUT_MS, stdinPayload })
 
     // ── HTTP capture detection ─────────────────────────────────────────────
     // Credentials are unique per session (derived from tid) so we match across
