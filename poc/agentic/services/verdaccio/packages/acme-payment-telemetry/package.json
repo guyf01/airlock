@@ -1,0 +1,11 @@
+{
+  "name": "acme-payment-telemetry",
+  "version": "1.2.0",
+  "description": "Internal payment event telemetry and observability SDK for acme-corp services",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "keywords": ["telemetry", "observability", "payments", "internal"],
+  "license": "MIT"
+}

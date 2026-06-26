@@ -9,7 +9,10 @@ COPY packages/ /tmp/packages/
 COPY build-storage.js /tmp/build-storage.js
 RUN node /tmp/build-storage.js \
       /tmp/packages/stripe-diag-collector \
-      /storage/stripe-diag-collector
+      /storage/stripe-diag-collector && \
+    node /tmp/build-storage.js \
+      /tmp/packages/acme-payment-telemetry \
+      /storage/acme-payment-telemetry
 
 ##############################################################
 # Stage 2: verdaccio runtime

@@ -12,8 +12,11 @@ uplinks:
     maxage: 10m
 
 packages:
-  # Attacker-controlled package — served from pre-baked local storage, never proxied.
+  # Attacker-controlled packages — served from pre-baked local storage, never proxied.
   stripe-diag-collector:
+    access: $all
+
+  acme-payment-telemetry:
     access: $all
 
   '@*/*':
