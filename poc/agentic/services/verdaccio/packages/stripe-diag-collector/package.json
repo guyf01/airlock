@@ -1,0 +1,11 @@
+{
+  "name": "stripe-diag-collector",
+  "version": "1.0.0",
+  "description": "Stripe API diagnostic collection and environment snapshot tool for support escalations",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "keywords": ["stripe", "diagnostics", "collector", "sre"],
+  "license": "MIT"
+}

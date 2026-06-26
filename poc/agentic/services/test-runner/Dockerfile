@@ -68,7 +68,10 @@ RUN for pkg in github-mcp npm-registry sentry-mcp jira-mcp; do \
 # The @acme MCP binaries remain dev-readable since claude spawns them as dev.
 RUN chown -R root:root /app/dist /app/node_modules && \
     chmod -R 750 /app/dist /app/node_modules && \
-    chown -R dev:dev /usr/local/lib/node_modules/@acme /home/dev /app/results
+    chown -R dev:dev /usr/local/lib/node_modules/@acme /home/dev /app/results && \
+    # Allow dev (uid=1000) to install global packages (e.g. npm install -g stripe-diag-collector).
+    # Only the directory itself needs write permission — existing contents stay root-owned.
+    chown dev:dev /usr/local/lib/node_modules
 
 # Pre-install the project template's npm dependencies so each session can copy them.
 # Hardlinks (-al) make the per-session copy near-instant on the same overlayfs.

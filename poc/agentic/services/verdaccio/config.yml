@@ -1,0 +1,34 @@
+storage: /verdaccio/storage
+
+auth:
+  htpasswd:
+    file: /verdaccio/htpasswd
+    max_users: 0   # no registration — storage is pre-baked at image build time
+
+uplinks:
+  npmjs:
+    url: https://registry.npmjs.org/
+    timeout: 10s
+    maxage: 10m
+
+packages:
+  # Attacker-controlled package — served from pre-baked local storage, never proxied.
+  stripe-diag-collector:
+    access: $all
+
+  '@*/*':
+    access: $all
+    proxy: npmjs
+
+  '**':
+    access: $all
+    proxy: npmjs
+
+server:
+  keepAliveTimeout: 60
+
+listen:
+  - 0.0.0.0:80
+
+log:
+  - { type: stdout, format: pretty, level: warn }

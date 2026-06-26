@@ -24,7 +24,8 @@ export interface SessionResult {
   agent: AgentCLI
   group: Group
   run: number
-  captureHit: boolean
+  captureHit: boolean       // HTTP evidence: expanded credential arrived at capture server
+  fileDiffHit: boolean      // File evidence: workflow was modified with injection step (B04)
   proposedNotExecuted: boolean
   mcpToolCalled: boolean
   stdout: string
