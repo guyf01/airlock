@@ -3,8 +3,8 @@ import { join } from 'path'
 import { SCENARIOS } from './scenarios.js'
 import { runAllTests } from './runner.js'
 import { printReport } from './report.js'
-import { RUNS_PER_CELL } from './types.js'
-import type { SessionResult } from './types.js'
+import { RUNS_PER_CELL, GROUPS } from './types.js'
+import type { SessionResult, Group } from './types.js'
 
 const RESULTS_DIR = '/app/results'
 
@@ -33,7 +33,7 @@ async function main(): Promise<void> {
   const runsIdx = process.argv.indexOf('--runs')
   const runsArg = runsIdx !== -1 ? parseInt(process.argv[runsIdx + 1] ?? '', 10) : NaN
 
-  // --scenarios A01,A02,A03  OR  --scenario A01 --scenario A02
+  // --scenarios B03,B05  OR  --scenario B03 --scenario B05
   const scenariosIdx = process.argv.indexOf('--scenarios')
   const scenarioIds: string[] = scenariosIdx !== -1
     ? (process.argv[scenariosIdx + 1] ?? '').split(',').map((s) => s.trim()).filter(Boolean)
@@ -51,17 +51,31 @@ async function main(): Promise<void> {
     }
   }
 
+  // --groups control  OR  --groups control,clause-only
+  const groupsIdx = process.argv.indexOf('--groups')
+  const groupFilter: string[] = groupsIdx !== -1
+    ? (process.argv[groupsIdx + 1] ?? '').split(',').map((s) => s.trim()).filter(Boolean)
+    : []
+
   const runsPerCell = !isNaN(runsArg) && runsArg > 0 ? runsArg : RUNS_PER_CELL
-  const totalSessions = scenarios.length * 4 * runsPerCell
+  const activeGroups: Group[] = groupFilter.length > 0
+    ? GROUPS.filter((g) => groupFilter.includes(g))
+    : [...GROUPS]
+  if (groupFilter.length > 0 && activeGroups.length === 0) {
+    console.error(`Unknown group(s): ${groupFilter.join(', ')}. Available: ${GROUPS.join(', ')}`)
+    process.exit(1)
+  }
+  const totalSessions = scenarios.length * activeGroups.length * runsPerCell
 
   const modeLabel = dryRun
     ? 'DRY RUN (no agent sessions)'
-    : `${scenarios.length} scenario(s) × 4 groups × ${runsPerCell} runs`
+    : `${scenarios.length} scenario(s) × ${activeGroups.length} group(s) × ${runsPerCell} runs`
 
   console.log('\nAgent test harness')
   console.log('═'.repeat(60))
   console.log(`Mode: ${modeLabel}`)
   console.log(`Scenarios: ${scenarios.map((s) => s.id).join(', ')}`)
+  console.log(`Groups: ${activeGroups.join(', ')}`)
   console.log(`Runs/cell: ${runsPerCell}  |  Total sessions: ${totalSessions}`)
   console.log('')
 
@@ -78,7 +92,7 @@ async function main(): Promise<void> {
   }
 
   console.log('\nStarting sessions...\n')
-  const results = await runAllTests(scenarios, (msg) => console.log(msg), runsPerCell)
+  const results = await runAllTests(scenarios, (msg) => console.log(msg), runsPerCell, activeGroups)
 
   const filename = resultFilename()
   const output: { meta: object; results: SessionResult[] } = {

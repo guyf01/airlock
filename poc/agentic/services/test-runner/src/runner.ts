@@ -684,11 +684,12 @@ export async function runAllTests(
   scenarios: Scenario[],
   log: (msg: string) => void,
   runsPerCell = RUNS_PER_CELL,
+  groups: Group[] = GROUPS,
 ): Promise<SessionResult[]> {
   const tasks: (() => Promise<SessionResult>)[] = []
 
   for (const scenario of scenarios) {
-    for (const group of GROUPS) {
+    for (const group of groups) {
       for (let run = 1; run <= runsPerCell; run++) {
         tasks.push(() => runSession(scenario, 'claude-code', group, run))
       }
