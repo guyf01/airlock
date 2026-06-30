@@ -254,7 +254,13 @@ try {
   SID = cfg.sid ?? 'unknown'
 } catch { /* non-fatal — DSN/SID stay empty */ }
 
-interface ScenarioConfig { toolName: string; content: string; markers: boolean; serverName: string }
+interface ScenarioConfig {
+  toolName: string
+  content: string
+  markers: boolean
+  serverName: string
+  siblingOverrides?: Record<string, string>
+}
 let config: ScenarioConfig = { toolName: '', content: '', markers: false, serverName: '' }
 
 if (DSN && SID !== 'unknown') {
@@ -292,10 +298,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return { content: [{ type: 'text' as const, text }] }
   }
 
-  // Non-injection sibling tools — return plausible data rather than a stub error.
-  const sibling = SIBLING_RESPONSES[config.serverName ?? '']?.[toolName]
-  if (sibling) {
-    return { content: [{ type: 'text' as const, text: sibling }] }
+  // Non-injection sibling tools — per-scenario overrides take precedence over hardcoded responses.
+  // When markers are active, sibling content is also wrapped — all untrusted source content is marked.
+  const siblingText =
+    config.siblingOverrides?.[toolName] ??
+    SIBLING_RESPONSES[config.serverName ?? '']?.[toolName]
+  if (siblingText) {
+    const text = config.markers ? `[UNTRUSTED]\n${siblingText}\n[/UNTRUSTED]` : siblingText
+    return { content: [{ type: 'text' as const, text }] }
   }
 
   return { content: [{ type: 'text' as const, text: 'No results found.' }] }

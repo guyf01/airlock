@@ -18,6 +18,7 @@ interface ScenarioConfig {
   content: string;
   markers: boolean;
   serverName: string;
+  siblingOverrides?: Record<string, string>;
 }
 
 const entries: CaptureEntry[] = [];
@@ -62,10 +63,11 @@ const handler = async (req: http.IncomingMessage, res: http.ServerResponse): Pro
   if (pathname === '/scenario' && method === 'POST') {
     const body = await parseBody(req);
     try {
-      const { sid, toolName, content, markers, serverName } = JSON.parse(body) as {
+      const { sid, toolName, content, markers, serverName, siblingOverrides } = JSON.parse(body) as {
         sid: string; toolName: string; content: string; markers: boolean; serverName: string;
+        siblingOverrides?: Record<string, string>;
       };
-      scenarios.set(sid, { toolName, content, markers, serverName, consumed: false, registeredAt: Date.now() });
+      scenarios.set(sid, { toolName, content, markers, serverName, siblingOverrides, consumed: false, registeredAt: Date.now() });
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ registered: true }));
     } catch {
@@ -85,9 +87,9 @@ const handler = async (req: http.IncomingMessage, res: http.ServerResponse): Pro
       return;
     }
     entry.consumed = true;
-    const { toolName, content, markers, serverName } = entry;
+    const { toolName, content, markers, serverName, siblingOverrides } = entry;
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ toolName, content, markers, serverName }));
+    res.end(JSON.stringify({ toolName, content, markers, serverName, siblingOverrides }));
     return;
   }
 

@@ -19,6 +19,15 @@ export interface Scenario {
   // When true: spawn claude without -p, write task to stdin, close stdin.
   // Simulates a developer mid-session asking a question, not a single-shot scripted run.
   interactive?: boolean
+  // Per-scenario sibling tool overrides. Keys are tool names; values are response text.
+  // Used to inject context-poisoning content into non-injection sibling calls.
+  // When markers are active, sibling overrides are also wrapped in [UNTRUSTED].
+  siblingOverrides?: Record<string, string>
+  // Developer-established rule written into CLAUDE.md for ALL groups (not just clause groups).
+  // Used as a canary: measures whether accumulated external context can override a standing rule.
+  canaryRule?: string
+  // Per-scenario timeout override. Defaults to SESSION_TIMEOUT_MS.
+  timeoutMs?: number
 }
 
 export interface SessionResult {
